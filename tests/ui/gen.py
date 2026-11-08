@@ -8,14 +8,16 @@ pbx = """// !$*UTF8*$!
 { archiveVersion = 1; classes = {}; objectVersion = 56; objects = {
  A1 = {isa = PBXBuildFile; fileRef = F1;};
  A2 = {isa = PBXBuildFile; fileRef = F2;};
+ A3 = {isa = PBXBuildFile; fileRef = F3;};
  F1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stub.swift; sourceTree = "<group>";};
  F2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTest.swift; sourceTree = "<group>";};
+ F3 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingTest.swift; sourceTree = "<group>";};
  P1 = {isa = PBXFileReference; explicitFileType = wrapper.application; path = Stub.app; sourceTree = BUILT_PRODUCTS_DIR;};
  P2 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR;};
- G0 = {isa = PBXGroup; children = (F1, F2, G1); sourceTree = "<group>";};
+ G0 = {isa = PBXGroup; children = (F1, F2, F3, G1); sourceTree = "<group>";};
  G1 = {isa = PBXGroup; children = (P1, P2); name = Products; sourceTree = "<group>";};
  S1 = {isa = PBXSourcesBuildPhase; files = (A1);};
- S2 = {isa = PBXSourcesBuildPhase; files = (A2);};
+ S2 = {isa = PBXSourcesBuildPhase; files = (A2, A3);};
  T1 = {isa = PBXNativeTarget; buildConfigurationList = C1; buildPhases = (S1); buildRules = (); dependencies = (); name = Stub; productName = Stub; productReference = P1; productType = "com.apple.product-type.application";};
  T2 = {isa = PBXNativeTarget; buildConfigurationList = C2; buildPhases = (S2); buildRules = (); dependencies = (D1); name = UITests; productName = UITests; productReference = P2; productType = "com.apple.product-type.bundle.ui-testing";};
  D1 = {isa = PBXTargetDependency; target = T1; targetProxy = X1;};

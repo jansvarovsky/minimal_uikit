@@ -310,7 +310,7 @@
     (super viewDidLoad self)
     (.setBackgroundColor: (.view self) (.systemBackgroundColor UIColor))
     (let s (stack 1 14))
-    (let title (label "UICTFontTextStyleLargeTitle" (.labelColor UIColor) 1))
+    (let title (label "UICTFontTextStyleTitle0" (.labelColor UIColor) 1))
     (.setText: title "Thimble")
     (let hf (field "Handle" false))
     (let pf (field "App password" true))
