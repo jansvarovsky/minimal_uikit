@@ -1,0 +1,11 @@
+{
+  "client_id": "https://YOUR-DOMAIN/client-metadata.json",
+  "client_name": "Thimble",
+  "application_type": "native",
+  "grant_types": ["authorization_code", "refresh_token"],
+  "response_types": ["code"],
+  "redirect_uris": ["org.YOUR-REVERSED-DOMAIN:/callback"],
+  "scope": "atproto transition:generic transition:chat.bsky",
+  "token_endpoint_auth_method": "none",
+  "dpop_bound_access_tokens": true
+}
