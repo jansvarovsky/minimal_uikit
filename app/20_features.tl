@@ -239,7 +239,7 @@
 (def blobreq (data)
   (let r (.requestWithURL: NSMutableURLRequest (.URLWithString: NSURL (str (host) "com.atproto.repo.uploadBlob"))))
   (.setHTTPMethod: r "POST")
-  (.setValue:forHTTPHeaderField: r (str "Bearer " (at gSession "accessJwt")) "Authorization")
+  (authorize r "POST" (str (host) "com.atproto.repo.uploadBlob") (at gSession "accessJwt"))
   (.setValue:forHTTPHeaderField: r "image/jpeg" "Content-Type")
   (.setHTTPBody: r data)
   r)

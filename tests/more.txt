@@ -1,0 +1,33 @@
+expect	Thimble
+type	Handle	$TINYSKY_A_HANDLE
+type	App password	$TINYSKY_A_APP_PASSWORD
+tap	Sign in
+expect	Thimble test post from B	30
+tapnear	Thimble test post from B	Repost
+wait	3
+tapnear	Thimble test post from B	Open profile
+expect	followers	30
+waittap	Block	20
+expect	Unblock	30
+dump
+waittap	Unblock	20
+expect	Block	30
+gone	Unblock	30
+back
+tab	1
+wait	1
+search	Thimble test post from B
+wait	5
+shot	search
+dump
+tab	4
+expect	followers	30
+expect	Thimble test post with photo	30
+tapnear	Thimble test post with photo	Open media
+wait	3
+shot	fullimage
+back
+wait	1
+barbutton	right
+expect	Sign in	20
+shot	signedout

@@ -7,7 +7,7 @@ OUT=${PWD}/build/results/${${SCRIPT:t}:r}; rm -rf "$OUT"; mkdir -p "$OUT"
 APP=build/$MODE-sim-test/Thimble.app
 xcrun simctl boot $U 2>/dev/null; xcrun simctl bootstatus $U -b >/dev/null 2>&1
 xcrun simctl terminate $U org.svarovsky.thimble 2>/dev/null
-[[ -z $KEEP ]] && xcrun simctl uninstall $U org.svarovsky.thimble 2>/dev/null
+[[ -z $KEEP ]] && { xcrun simctl uninstall $U org.svarovsky.thimble 2>/dev/null; xcrun simctl keychain $U reset; }
 xcrun simctl install $U $APP || exit 2
 set -a; source ~/.config/tinysky/credentials; set +a
 for v in ${(k)parameters[(R)*export*]}; do [[ $v == TINYSKY_* ]] && export SIMCTL_CHILD_$v="${(P)v}"; done

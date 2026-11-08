@@ -1,0 +1,24 @@
+// !$*UTF8*$!
+{ archiveVersion = 1; classes = {}; objectVersion = 56; objects = {
+ A1 = {isa = PBXBuildFile; fileRef = F1;};
+ A2 = {isa = PBXBuildFile; fileRef = F2;};
+ F1 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stub.swift; sourceTree = "<group>";};
+ F2 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTest.swift; sourceTree = "<group>";};
+ P1 = {isa = PBXFileReference; explicitFileType = wrapper.application; path = Stub.app; sourceTree = BUILT_PRODUCTS_DIR;};
+ P2 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR;};
+ G0 = {isa = PBXGroup; children = (F1, F2, G1); sourceTree = "<group>";};
+ G1 = {isa = PBXGroup; children = (P1, P2); name = Products; sourceTree = "<group>";};
+ S1 = {isa = PBXSourcesBuildPhase; files = (A1);};
+ S2 = {isa = PBXSourcesBuildPhase; files = (A2);};
+ T1 = {isa = PBXNativeTarget; buildConfigurationList = C1; buildPhases = (S1); buildRules = (); dependencies = (); name = Stub; productName = Stub; productReference = P1; productType = "com.apple.product-type.application";};
+ T2 = {isa = PBXNativeTarget; buildConfigurationList = C2; buildPhases = (S2); buildRules = (); dependencies = (D1); name = UITests; productName = UITests; productReference = P2; productType = "com.apple.product-type.bundle.ui-testing";};
+ D1 = {isa = PBXTargetDependency; target = T1; targetProxy = X1;};
+ X1 = {isa = PBXContainerItemProxy; containerPortal = R0; proxyType = 1; remoteGlobalIDString = T1; remoteInfo = Stub;};
+ R0 = {isa = PBXProject; buildConfigurationList = C0; compatibilityVersion = "Xcode 14.0"; mainGroup = G0; productRefGroup = G1; projectDirPath = ""; projectRoot = ""; targets = (T1, T2);};
+ C0 = {isa = XCConfigurationList; buildConfigurations = (B0);};
+ C1 = {isa = XCConfigurationList; buildConfigurations = (B1);};
+ C2 = {isa = XCConfigurationList; buildConfigurations = (B2);};
+ B0 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {SDKROOT = iphonesimulator; IPHONEOS_DEPLOYMENT_TARGET = 18.0; SWIFT_VERSION = 5.0; CODE_SIGNING_ALLOWED = NO; ONLY_ACTIVE_ARCH = YES;};};
+ B1 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {PRODUCT_NAME = Stub; PRODUCT_BUNDLE_IDENTIFIER = org.svarovsky.stub; GENERATE_INFOPLIST_FILE = YES;};};
+ B2 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {PRODUCT_NAME = UITests; PRODUCT_BUNDLE_IDENTIFIER = org.svarovsky.uitests; GENERATE_INFOPLIST_FILE = YES; TEST_TARGET_NAME = Stub;};};
+}; rootObject = R0; }

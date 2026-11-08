@@ -98,7 +98,21 @@ static void step(NSTimer *t) {
     else if ([c isEqual:@"log"]) logs(a);
     else fail([@"unknown command " stringByAppendingString:l]);
 }
+#include <arpa/inet.h>
+// Bounces the loopback OAuth redirect to the app's custom scheme, as the hosted client would.
+static void redirector(void) {
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        int s = socket(AF_INET, SOCK_STREAM, 0), one = 1; setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &one, sizeof one);
+        struct sockaddr_in a = {.sin_family = AF_INET, .sin_port = htons(8123), .sin_addr.s_addr = htonl(INADDR_LOOPBACK)};
+        if (bind(s, (void *)&a, sizeof a) || listen(s, 4)) return;
+        for (;;) { int c = accept(s, 0, 0); char b[8192]; long n = read(c, b, sizeof b - 1); if (n <= 0) { close(c); continue; } b[n] = 0;
+            char *sp = strchr(b + 4, ' '); if (sp) *sp = 0; char *q = strchr(b, '?');
+            char r[9000]; int m = snprintf(r, sizeof r, "HTTP/1.1 302 Found\r\nLocation: thimble://cb%s\r\nContent-Length: 0\r\nConnection: close\r\n\r\n", q ?: "");
+            write(c, r, m); close(c); }
+    });
+}
 void ts_test_start(void) {
+    if (getenv("THIMBLE_OAUTH_DEV")) redirector();
     const char *s = getenv("TS_SCRIPT"), *o = getenv("TS_OUT"); if (!s || !o) return;
     outdir = [@(o) retain]; [[NSFileManager defaultManager] removeItemAtPath:[outdir stringByAppendingPathComponent:@"log.txt"] error:nil];
     lines = [[[NSString stringWithContentsOfFile:@(s) encoding:4 error:nil] componentsSeparatedByString:@"\n"] retain];

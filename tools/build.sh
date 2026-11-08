@@ -13,12 +13,13 @@ SYS=$(xcrun --show-sdk-path --sdk $SDK)
 # Every declared Objective-C signature is checked against the real SDK.
 clang -x objective-c -fsyntax-only -target $TRIPLE -isysroot "$SYS" -Wno-deprecated-declarations -Wno-unguarded-availability-new \
   -Werror=objc-method-access -Werror=incompatible-pointer-types -Werror=int-conversion -Werror=float-conversion -Werror=implicit-int-float-conversion "$GEN/check.m"
+ENTS=(); [[ $TARGET == sim ]] && ENTS=(-Wl,-sectcreate,__TEXT,__entitlements,tests/sim.entitlements)
 DEF=(); [[ $MODE == vm ]] && DEF+=(-DVM)
 SRC=(runtime/host.c)
 if [[ -n $TEST ]]; then DEF+=(-DTEST); SRC+=(runtime/test.m); LINKX=(-framework CoreGraphics); fi
 clang -target $TRIPLE -isysroot "$SYS" -Oz -fno-unwind-tables -fno-asynchronous-unwind-tables -fblocks -fno-objc-arc \
   -w -I"$GEN" $DEF -framework UIKit -framework Foundation -framework Security -framework AVKit -framework AVFoundation \
-  -framework PhotosUI -framework AuthenticationServices -lcompression -lobjc $LINKX -Wl,-dead_strip -Wl,-x -o "$APP/a" $SRC
+  -framework PhotosUI -framework AuthenticationServices -lcompression -lobjc $LINKX $ENTS -Wl,-dead_strip -Wl,-x -o "$APP/a" $SRC
 strip -x "$APP/a" 2>/dev/null || true
 plutil -convert binary1 -o "$APP/Info.plist" app/Info.plist
 codesign -f -s - "$APP" 2>/dev/null

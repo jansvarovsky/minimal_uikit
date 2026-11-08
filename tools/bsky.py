@@ -33,4 +33,10 @@ elif sys.argv[1] == 'cleanup':
         for c in TEST_COLLS:
             for r in records(t, d, c):
                 call('com.atproto.repo.deleteRecord', {'repo': d, 'collection': c, 'rkey': r['uri'].rsplit('/', 1)[1]}, t); n += 1
+    for t, d in ((ta, da), (tb, db)):
+        svc = [x for x in json.load(urllib.request.urlopen(urllib.request.Request('https://plc.directory/' + d, headers={'User-Agent': 'thimble-test'}), timeout=20))['service'] if x['id'] == '#atproto_pds'][0]['serviceEndpoint'] + '/xrpc/'
+        hdr = {'Authorization': 'Bearer ' + t, 'User-Agent': 'thimble-test', 'Content-Type': 'application/json', 'atproto-proxy': 'did:web:api.bsky.chat#bsky_chat'}
+        cs = json.load(urllib.request.urlopen(urllib.request.Request(svc + 'chat.bsky.convo.listConvos?limit=50', headers=hdr), timeout=20)).get('convos', [])
+        for c in cs:
+            urllib.request.urlopen(urllib.request.Request(svc + 'chat.bsky.convo.leaveConvo', data=json.dumps({'convoId': c['id']}).encode(), headers=hdr), timeout=20); n += 1
     print('deleted', n, 'records')
