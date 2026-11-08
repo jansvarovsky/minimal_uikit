@@ -1,0 +1,9 @@
+expect	Thimble
+shot	login
+type	Handle	$TINYSKY_A_HANDLE
+type	App password	$TINYSKY_A_APP_PASSWORD
+tap	Sign in
+expect	Home	30
+wait	4
+shot	timeline
+dump
