@@ -1,0 +1,46 @@
+expect	Thimble
+type	Handle	$TINYSKY_A_HANDLE
+type	App password	$TINYSKY_A_APP_PASSWORD
+tap	Sign in
+expect	Home	30
+barbutton	right
+expect	Add photo
+type	Post text	Thimble test post with photo, please ignore
+attach	/Users/jansvarovsky/source/minimal_uikit/tests/green.jpg
+type	Image description	A plain green test image
+shot	compose
+barbutton	right
+gone	Add photo	30
+tab	4
+expect	Thimble test post with photo	30
+wait	3
+shot	you
+dump
+tapnear	Thimble test post with photo	Like
+wait	3
+dump
+tapnear	Thimble test post with photo	Reply
+expect	Add photo
+type	Post text	Thimble test reply, please ignore
+barbutton	right
+gone	Add photo	30
+wait	2
+tab	0
+expect	Thimble test post from B	30
+tapnear	Thimble test post from B	Like
+wait	3
+tapnear	Thimble test post from B	Open profile
+expect	followers	30
+wait	2
+shot	profileB
+dump
+back
+tap	Thimble test post from B
+expect	Thread	20
+wait	2
+shot	thread
+back
+tab	2
+wait	4
+shot	alerts
+dump

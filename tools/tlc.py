@@ -145,7 +145,7 @@ class Compiler:
         for t in types:
             if t == "float":
                 self.err(x, "float parameters are not supported")
-            out += TYPE_KIND.get(t, "w") if t != "BOOL" else "w"
+            out += "ww" if t == "NSRange" else (TYPE_KIND.get(t, "w") if t != "BOOL" else "w")
         return out
 
     def top(self, forms):

@@ -1,0 +1,11 @@
+mock	getTimeline	/Users/jansvarovsky/source/minimal_uikit/tests/fix/video.json
+expect	Thimble
+type	Handle	$TINYSKY_A_HANDLE
+type	App password	$TINYSKY_A_APP_PASSWORD
+tap	Sign in
+expect	Mock video post	30
+expect	Video
+tapnear	Mock video post	Open media
+wait	6
+shot	video
+dump

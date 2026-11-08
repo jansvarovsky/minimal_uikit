@@ -1,0 +1,6 @@
+{"feed":[
+{"post":{"uri":"at://x/y/1","cid":"c1","author":{"did":"d1","handle":"hidden.example","labels":[{"val":"!hide"}]},"record":{"text":"THIS MUST NOT APPEAR"},"viewer":{},"labels":[]}},
+{"post":{"uri":"at://x/y/2","cid":"c2","author":{"did":"d2","handle":"warned.example"},"record":{"text":"Post with labelled media"},"viewer":{},"labels":[{"val":"porn"}],"embed":{"images":[{"thumb":"https://example.invalid/t.jpg","fullsize":"https://example.invalid/f.jpg","alt":""}]}}},
+{"post":{"uri":"at://x/y/3","cid":"c3","author":{"did":"d3","handle":"muted.example","viewer":{"muted":true}},"record":{"text":"MUTED MUST NOT APPEAR"},"viewer":{},"labels":[]}},
+{"post":{"uri":"at://x/y/4","cid":"c4","author":{"did":"d4","handle":"clean.example"},"record":{"text":"Clean mock post"},"viewer":{},"labels":[]}}
+],"cursor":null}

@@ -1,0 +1,19 @@
+mock	getTimeline	/Users/jansvarovsky/source/minimal_uikit/tests/fix/labels.json
+mock	createReport	/Users/jansvarovsky/source/minimal_uikit/tests/fix/empty.json
+expect	Thimble
+type	Handle	$TINYSKY_A_HANDLE
+type	App password	$TINYSKY_A_APP_PASSWORD
+tap	Sign in
+expect	Clean mock post	30
+gone	THIS MUST NOT APPEAR	2
+gone	MUTED MUST NOT APPEAR	2
+expect	Sensitive media hidden
+shot	moderation
+tapnear	Clean mock post	More
+expect	Clean mock post
+wait	1
+alert	Report post
+wait	1
+alert	Spam
+expect	Report sent	10
+shot	reported

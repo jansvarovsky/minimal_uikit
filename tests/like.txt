@@ -1,0 +1,11 @@
+mock	getTimeline	/Users/jansvarovsky/source/minimal_uikit/tests/fix/labels.json
+mock	createRecord	/Users/jansvarovsky/source/minimal_uikit/tests/fix/uri.json
+expect	Thimble
+type	Handle	$TINYSKY_A_HANDLE
+type	App password	$TINYSKY_A_APP_PASSWORD
+tap	Sign in
+expect	Clean mock post	30
+dump
+tapnear	Clean mock post	Like
+wait	1
+dump

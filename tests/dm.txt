@@ -1,0 +1,21 @@
+expect	Thimble
+type	Handle	$TINYSKY_A_HANDLE
+type	App password	$TINYSKY_A_APP_PASSWORD
+tap	Sign in
+expect	Thimble test post from B	30
+tapnear	Thimble test post from B	Open profile
+expect	followers	30
+waittap	Message	20
+expect	Send	20
+wait	2
+type	Message	Thimble test DM, please ignore
+tap	Send
+expect	Thimble test DM, please ignore	20
+wait	2
+shot	chat
+dump
+back
+tab	3
+wait	4
+shot	chats
+dump

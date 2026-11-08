@@ -1,5 +1,16 @@
 // Debug-only script runner: drives the UI from a file. Never linked into release builds.
 #import <UIKit/UIKit.h>
+static NSMutableDictionary *mocks;
+@interface TSMock : NSURLProtocol @end
+@implementation TSMock
++ (NSString *)hit:(NSURLRequest *)r { for (NSString *k in mocks) if ([r.URL.absoluteString containsString:k]) return k; return nil; }
++ (BOOL)canInitWithRequest:(NSURLRequest *)r { return [self hit:r] != nil; }
++ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)r { return r; }
+- (void)startLoading { NSString *k = [TSMock hit:self.request]; NSData *d = [NSData dataWithContentsOfFile:mocks[k]] ?: [@"{}" dataUsingEncoding:4];
+  NSHTTPURLResponse *h = [[NSHTTPURLResponse alloc] initWithURL:self.request.URL statusCode:200 HTTPVersion:@"HTTP/1.1" headerFields:@{}];
+  [self.client URLProtocol:self didReceiveResponse:h cacheStoragePolicy:NSURLCacheStorageNotAllowed]; [self.client URLProtocol:self didLoadData:d]; [self.client URLProtocolDidFinishLoading:self]; }
+- (void)stopLoading {}
+@end
 static NSArray *lines; static int pc; static NSString *outdir; static NSDate *deadline;
 static void logs(NSString *s) {
     NSString *p = [outdir stringByAppendingPathComponent:@"log.txt"];
@@ -17,9 +28,9 @@ static NSArray *views(void) {
 static NSString *textOf(UIView *v) {
     NSString *t = nil;
     if ([v isKindOfClass:UILabel.class]) t = ((UILabel *)v).text;
-    else if ([v isKindOfClass:UIButton.class]) t = [(UIButton *)v currentTitle] ?: v.accessibilityLabel;
+    else if ([v isKindOfClass:UIButton.class]) t = v.accessibilityLabel ?: [(UIButton *)v currentTitle];
     else if ([v isKindOfClass:UITextField.class]) { UITextField *f = (id)v; t = f.secureTextEntry ? f.placeholder : (f.text.length ? f.text : f.placeholder); }
-    else if ([v isKindOfClass:UITextView.class]) t = ((UITextView *)v).text;
+    else if ([v isKindOfClass:UITextView.class]) t = ((UITextView *)v).text.length ? ((UITextView *)v).text : v.accessibilityLabel;
     else t = v.accessibilityLabel;
     return t;
 }
@@ -34,7 +45,7 @@ static void shot(NSString *n) {
 static BOOL tap(NSString *q) {
     UIView *v = find(q); if (!v) return NO;
     for (UIView *p = v; p; p = p.superview) {
-        if ([p isKindOfClass:UIControl.class]) { [(UIControl *)p sendActionsForControlEvents:UIControlEventTouchUpInside|UIControlEventPrimaryActionTriggered]; return YES; }
+        if ([p isKindOfClass:UIControl.class]) { [(UIControl *)p sendActionsForControlEvents:UIControlEventPrimaryActionTriggered]; return YES; }
         if ([p isKindOfClass:UITableViewCell.class]) {
             UIView *t = p.superview; while (t && ![t isKindOfClass:UITableView.class]) t = t.superview;
             UITableView *tv = (id)t; NSIndexPath *ip = [tv indexPathForCell:(id)p];
@@ -45,8 +56,8 @@ static BOOL tap(NSString *q) {
 }
 static NSString *expand(NSString *s) { if ([s hasPrefix:@"$"]) { const char *e = getenv(s.UTF8String + 1); return e ? @(e) : @""; } return s; }
 static UIViewController *top(UIViewController *c) {
-    if ([c isKindOfClass:UITabBarController.class]) return top(((UITabBarController *)c).selectedViewController);
     if (c.presentedViewController) return top(c.presentedViewController);
+    if ([c isKindOfClass:UITabBarController.class]) return top(((UITabBarController *)c).selectedViewController);
     if ([c isKindOfClass:UINavigationController.class]) return top(((UINavigationController *)c).topViewController);
     return c;
 }
@@ -78,6 +89,12 @@ static void step(NSTimer *t) {
     else if ([c isEqual:@"barbutton"]) { UIViewController *x = top(win().rootViewController); UIBarButtonItem *i = [a isEqual:@"left"] ? x.navigationItem.leftBarButtonItem : x.navigationItem.rightBarButtonItem; if (!i) fail(l); if (i.primaryAction) [i.primaryAction performWithSender:nil target:nil]; else if (i.target) [UIApplication.sharedApplication sendAction:i.action to:i.target from:i forEvent:nil]; else fail(l); }
     else if ([c isEqual:@"scroll"]) { for (UIView *v in views()) if ([v isKindOfClass:UIScrollView.class] && ![v isKindOfClass:UITextView.class] && onscreen(v)) { UIScrollView *s = (id)v; [s setContentOffset:CGPointMake(0, s.contentOffset.y + s.bounds.size.height) animated:NO]; [s layoutIfNeeded]; break; } }
     else if ([c isEqual:@"dump"]) { NSMutableArray *x = [NSMutableArray array]; for (UIView *v in views()) { NSString *s = textOf(v); if (s.length && onscreen(v)) [x addObject:s]; } logs([@"DUMP " stringByAppendingString:[x componentsJoinedByString:@" | "]]); }
+    else if ([c isEqual:@"tapnear"]) { UIView *v = find(a); while (v && ![v isKindOfClass:UITableViewCell.class]) v = v.superview; if (!v) fail(l); NSMutableArray *x = [NSMutableArray array]; walk(v, x); UIView *hit = nil; for (UIView *y in x) { NSString *t = textOf(y); if ([y isKindOfClass:UIButton.class] && t && [t containsString:b]) { hit = y; break; } } if (!hit) fail(l); [(UIControl *)hit sendActionsForControlEvents:UIControlEventPrimaryActionTriggered]; }
+    else if ([c isEqual:@"alert"]) { UIViewController *x = top(win().rootViewController); if (![x isKindOfClass:UIAlertController.class]) fail(l); UIAlertAction *hit = nil; for (UIAlertAction *y in ((UIAlertController *)x).actions) if ([y.title isEqual:a]) hit = y; if (!hit) fail(l); void (^h)(UIAlertAction *) = [hit valueForKey:@"handler"]; [x dismissViewControllerAnimated:NO completion:^{ if (h) h(hit); }]; }
+    else if ([c isEqual:@"mock"]) { if (!mocks) { mocks = [NSMutableDictionary new]; [NSURLProtocol registerClass:TSMock.class]; } mocks[a] = b; }
+    else if ([c isEqual:@"search"]) { UISearchBar *sb = nil; for (UIView *v in views()) if ([v isKindOfClass:UISearchBar.class]) sb = (id)v; if (!sb) fail(l); sb.text = a; [sb.delegate searchBarSearchButtonClicked:sb]; }
+    else if ([c isEqual:@"attach"]) { UIViewController *x = top(win().rootViewController); [x performSelector:@selector(attach:) withObject:[UIImage imageWithContentsOfFile:a]]; }
+    else if ([c isEqual:@"reload"]) { UIViewController *x = top(win().rootViewController); if ([x respondsToSelector:@selector(tableView)]) [(id)x viewWillAppear:NO]; }
     else if ([c isEqual:@"log"]) logs(a);
     else fail([@"unknown command " stringByAppendingString:l]);
 }
